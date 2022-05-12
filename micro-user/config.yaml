@@ -1,0 +1,10 @@
+db:
+  name: "user"
+  host: "127.0.0.1"
+  port: "5432"
+  user: "postgres"
+  pass: "secret"
+  pool: 
+    minSize: 1
+    maxSize: 3
+ 
