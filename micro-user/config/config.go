@@ -11,7 +11,7 @@ type Config struct {
 type DbConfig struct {
 	Name string       `mapstructure:"name"`
 	Host string       `mapstructure:"host"`
-	Port string       `mapstructure:"port"`
+	Port int32        `mapstructure:"port"`
 	User string       `mapstructure:"user"`
 	Pass string       `mapstructure:"pass"`
 	Pool DbPoolConfig `mapstructure:"pool"`

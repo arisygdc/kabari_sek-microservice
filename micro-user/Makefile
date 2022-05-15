@@ -4,6 +4,8 @@ postgresql_user := postgres
 postgresql_password := secret
 postgresql_database := user
 
+migration_dir := db/migration
+
 installpostgre:
 	docker run -d --name ${container_name} \
 	-p 5432:5432 \
@@ -22,4 +24,12 @@ uninstallpostgre:
 	docker container stop ${container_name}
 	docker container rm ${container_name}
 
-.PHONY: installpostgre stoppostgre startpostgre uninstallpostgre
+createmigrate:
+	migrate create -ext sql -dir ${migration_dir} -seq init_schema
+
+migrateup:
+	migrate -path ${migration_dir} \
+	-database "postgresql://${postgresql_user}:${postgresql_password}@localhost:5432/${postgresql_database}?sslmode=disable" \
+	-verbose up
+
+.PHONY: installpostgre stoppostgre startpostgre uninstallpostgre createmigrate migrateup

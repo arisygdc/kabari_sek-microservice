@@ -1,7 +1,7 @@
 CREATE TABLE "auth" (
   "id" uuid PRIMARY KEY,
-  "username" VARCHAR,
-  "password" VARCHAR
+  "username" VARCHAR NOT NULL,
+  "password" VARCHAR NOT NULL
 );
 
 CREATE TABLE "auth_user" (
@@ -12,9 +12,10 @@ CREATE TABLE "auth_user" (
 
 CREATE TABLE "user" (
   "id" uuid PRIMARY KEY,
-  "firstname" VARCHAR,
-  "lastname" VARCHAR,
-  "birth" date
+  "firstname" VARCHAR NOT NULL,
+  "lastname" VARCHAR NOT NULL,
+  "birth" date NOT NULL,
+  "created_at" TIMESTAMP NOT NULL
 );
 
 CREATE TABLE "friends" (

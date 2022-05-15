@@ -10,5 +10,5 @@ func TestLoadConfig(t *testing.T) {
 	var conf = &Config{}
 	err := LoadConfig("../.", "config", conf)
 	assert.NoError(t, err)
-	assert.Equal(t, "user", conf.Database.Name)
+	assert.NotEqual(t, "", conf.Database.Name)
 }
