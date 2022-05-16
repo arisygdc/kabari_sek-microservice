@@ -13,3 +13,8 @@ type User struct {
 	Lastname  string
 	Birth     time.Time
 }
+
+type RegisterUser struct {
+	Auth
+	User
+}
