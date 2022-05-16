@@ -10,6 +10,9 @@ import (
 
 type Querier interface {
 	GetAuth(ctx context.Context, username string) (Auth, error)
+	InsertAuth(ctx context.Context, arg InsertAuthParams) error
+	InsertAuthUser(ctx context.Context, arg InsertAuthUserParams) error
+	InsertUser(ctx context.Context, arg InsertUserParams) error
 }
 
 var _ Querier = (*Queries)(nil)
