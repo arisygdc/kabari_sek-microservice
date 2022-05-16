@@ -12,6 +12,23 @@ import (
 	"github.com/google/uuid"
 )
 
+const getUser = `-- name: GetUser :one
+SELECT id, firstname, lastname, birth, created_at FROM users WHERE id = $1
+`
+
+func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
+	row := q.db.QueryRow(ctx, getUser, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Firstname,
+		&i.Lastname,
+		&i.Birth,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const insertUser = `-- name: InsertUser :exec
 INSERT INTO users (id, firstname, lastname, birth) VALUES ($1, $2, $3, $4)
 `

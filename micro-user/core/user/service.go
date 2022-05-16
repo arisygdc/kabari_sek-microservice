@@ -64,3 +64,8 @@ func (s Service) Register(ctx context.Context, user RegisterUser) error {
 		return err
 	})
 }
+
+// Get user information by id
+func (s Service) GetUser(ctx context.Context, id uuid.UUID) (postgres.User, error) {
+	return s.repo.Query().GetUser(ctx, id)
+}
