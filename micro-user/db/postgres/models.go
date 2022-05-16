@@ -5,7 +5,6 @@
 package postgres
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,17 +14,6 @@ type Auth struct {
 	ID       uuid.UUID `json:"id"`
 	Username string    `json:"username"`
 	Password string    `json:"password"`
-}
-
-type AuthUser struct {
-	AuthID uuid.UUID `json:"auth_id"`
-	UserID uuid.UUID `json:"user_id"`
-}
-
-type Friend struct {
-	User1      uuid.UUID    `json:"user1"`
-	User2      uuid.UUID    `json:"user2"`
-	ApprovedAt sql.NullTime `json:"approved_at"`
 }
 
 type User struct {

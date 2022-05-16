@@ -12,20 +12,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const insertAuthUser = `-- name: InsertAuthUser :exec
-INSERT INTO auth_user (auth_id, user_id) VALUES ($1, $2)
-`
-
-type InsertAuthUserParams struct {
-	AuthID uuid.UUID `json:"auth_id"`
-	UserID uuid.UUID `json:"user_id"`
-}
-
-func (q *Queries) InsertAuthUser(ctx context.Context, arg InsertAuthUserParams) error {
-	_, err := q.db.Exec(ctx, insertAuthUser, arg.AuthID, arg.UserID)
-	return err
-}
-
 const insertUser = `-- name: InsertUser :exec
 INSERT INTO users (id, firstname, lastname, birth) VALUES ($1, $2, $3, $4)
 `

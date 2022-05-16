@@ -8,7 +8,6 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type Service struct {
@@ -29,20 +28,21 @@ func (s Service) Login(ctx context.Context, auth Auth) error {
 		return err
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(authenticate.Password), []byte(auth.password))
+	err = CheckHashPassword(authenticate.Password, auth.password)
 	return err
 }
 
-func (s Service) Register(ctx context.Context, auth Auth, user User) error {
-	password, err := bcrypt.GenerateFromPassword([]byte(auth.password), bcrypt.DefaultCost)
+// Register user needs authentication and user information
+func (s Service) Register(ctx context.Context, user RegisterUser) error {
+	password, err := HashPassword(user.password)
 	if err != nil {
 		return err
 	}
 
 	authParam := postgres.InsertAuthParams{
 		ID:       uuid.New(),
-		Username: auth.username,
-		Password: string(password),
+		Username: user.username,
+		Password: password,
 	}
 
 	userParam := postgres.InsertUserParams{
@@ -61,13 +61,6 @@ func (s Service) Register(ctx context.Context, auth Auth, user User) error {
 
 		err = q.InsertUser(ctx, userParam)
 
-		if err != nil {
-			return err
-		}
-
-		return q.InsertAuthUser(ctx, postgres.InsertAuthUserParams{
-			AuthID: authParam.ID,
-			UserID: userParam.ID,
-		})
+		return err
 	})
 }
