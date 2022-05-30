@@ -11,6 +11,7 @@ import (
 )
 
 type Repository struct {
+	conn    *pgx.Conn
 	querier *postgres.Queries
 }
 
@@ -25,6 +26,7 @@ func NewRepository(ctx context.Context, config config.DbConfig) (*Repository, er
 		return nil, err
 	}
 	repos := &Repository{
+		conn:    conn,
 		querier: postgres.New(conn),
 	}
 	return repos, nil
@@ -33,4 +35,30 @@ func NewRepository(ctx context.Context, config config.DbConfig) (*Repository, er
 // Use query function
 func (r Repository) Q() postgres.Querier {
 	return r.querier
+}
+
+// Query with transaction
+func (r Repository) TX(ctx context.Context, stmt func(q postgres.Querier) error) error {
+	tx, err := r.conn.BeginTx(ctx, pgx.TxOptions{})
+	if err != nil {
+		return err
+	}
+
+	qTx := r.querier.WithTx(tx)
+	err = txErrAction(ctx, tx, stmt(qTx))
+	if err != nil {
+		return err
+	}
+	return tx.Commit(ctx)
+}
+
+func txErrAction(ctx context.Context, tx pgx.Tx, err error) error {
+	if err != nil {
+		RlbErr := tx.Rollback(ctx)
+		if RlbErr != nil {
+			return RlbErr
+		}
+		return err
+	}
+	return nil
 }
