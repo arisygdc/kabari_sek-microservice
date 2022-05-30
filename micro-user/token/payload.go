@@ -8,6 +8,12 @@ import (
 	"github.com/google/uuid"
 )
 
+var (
+	ErrTokenInvalidId     = jwtProvider.ErrTokenInvalidId
+	ErrTokenExpired       = jwtProvider.ErrTokenExpired
+	ErrTokenIssueAfterExp = fmt.Errorf("token issue after expired")
+)
+
 type Payload interface {
 	Valid() error
 }
@@ -35,11 +41,11 @@ func (payload AuthenticationPayload) Valid() error {
 	issued := time.Unix(payload.Issued_at, 0)
 	exp := time.Unix(payload.Expired_at, 0)
 	if issued.After(exp) {
-		return fmt.Errorf("token issue after expired")
+		return ErrTokenIssueAfterExp
 	}
 
 	if time.Now().After(exp) {
-		return jwtProvider.ErrTokenExpired
+		return ErrTokenExpired
 	}
 
 	return nil
@@ -50,5 +56,5 @@ func (Payload AuthenticationPayload) CompareID(user_id uuid.UUID, username strin
 		return nil
 	}
 
-	return fmt.Errorf("payload id and user id not match")
+	return ErrTokenInvalidId
 }

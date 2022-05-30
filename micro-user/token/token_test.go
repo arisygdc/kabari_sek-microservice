@@ -21,10 +21,6 @@ func TestJWT(t *testing.T) {
 	err = payload.Valid()
 	assert.NoError(t, err)
 
-	// compare id hash
-	idToCompare := uuid.NewSHA1(idUser, []byte(username))
-	assert.Equal(t, payload.Id.String(), idToCompare.String())
-
 	// Generate jwt signed string
 	jwt := NewJWT(secret)
 	signedString, err := jwt.Generate(payload)
@@ -35,4 +31,10 @@ func TestJWT(t *testing.T) {
 	payload = AuthenticationPayload{}
 	jwt.ParseWithClaimAuthPayload(signedString, &payload)
 	assert.NotEmpty(t, payload.Username)
+
+	// Compare hash ID
+	err = payload.CompareID(idUser, username)
+	assert.NoError(t, err)
+	err = payload.CompareID(uuid.New(), username)
+	assert.ErrorIs(t, err, ErrTokenInvalidId)
 }
