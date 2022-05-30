@@ -1,7 +1,9 @@
 CREATE TABLE "auth" (
   "id" uuid PRIMARY KEY,
   "username" VARCHAR NOT NULL,
-  "password" VARCHAR NOT NULL
+  "password" VARCHAR NOT NULL,
+  "created_at" BIGINT NOT NULL,
+  "updated_at" BIGINT NOT NULL
 );
 
 CREATE TABLE "users" (
@@ -9,5 +11,6 @@ CREATE TABLE "users" (
   "firstname" VARCHAR NOT NULL,
   "lastname" VARCHAR NOT NULL,
   "birth" date NOT NULL,
-  "created_at" TIMESTAMP NOT NULL DEFAULT NOW()
+  "created_at" BIGINT NOT NULL,
+  "updated_at" BIGINT NOT NULL
 );
