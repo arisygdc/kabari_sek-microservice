@@ -6,15 +6,15 @@ package postgres
 
 import (
 	"context"
-
-	"github.com/google/uuid"
 )
 
 type Querier interface {
-	RolePermissions(ctx context.Context, roleID int16) ([]RolePermissionsRow, error)
-	UserBannedPermissions(ctx context.Context, arg UserBannedPermissionsParams) ([]UserBannedPermission, error)
-	UserBannedRoles(ctx context.Context, arg UserBannedRolesParams) ([]UserBannedRole, error)
-	UserRoles(ctx context.Context, userID uuid.UUID) ([]Role, error)
+	BannUserPermission(ctx context.Context, arg BannUserPermissionParams) error
+	Permission(ctx context.Context, name string) (Permission, error)
+	Role(ctx context.Context, name string) (Role, error)
+	RoleGrantPermission(ctx context.Context, arg RoleGrantPermissionParams) error
+	UserBannedPermission(ctx context.Context, arg UserBannedPermissionParams) (UserBannedPermission, error)
+	UserPermit(ctx context.Context, arg UserPermitParams) (RolePermission, error)
 }
 
 var _ Querier = (*Queries)(nil)

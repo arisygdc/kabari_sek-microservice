@@ -9,37 +9,37 @@ import (
 )
 
 type Permission struct {
-	ID   int16  `json:"id"`
-	Name string `json:"name"`
+	ID   int16
+	Name string
 }
 
 type Role struct {
-	ID   int16  `json:"id"`
-	Name string `json:"name"`
+	ID   int16
+	Name string
 }
 
 type RolePermission struct {
-	RoleID       int16 `json:"role_id"`
-	PermissionID int16 `json:"permission_id"`
+	RoleID       int16
+	PermissionID int16
 }
 
 type UserBannedPermission struct {
-	ID           int64     `json:"id"`
-	UserID       uuid.UUID `json:"user_id"`
-	PermissionID int16     `json:"permission_id"`
-	BannedAt     int64     `json:"banned_at"`
-	BannedExp    int64     `json:"banned_exp"`
+	ID           int64
+	UserID       uuid.UUID
+	PermissionID int16
+	BannedAt     int64
+	BannedExp    int64
 }
 
 type UserBannedRole struct {
-	ID        int64     `json:"id"`
-	UserID    uuid.UUID `json:"user_id"`
-	RoleID    int16     `json:"role_id"`
-	BannedAt  int64     `json:"banned_at"`
-	BannedExp int64     `json:"banned_exp"`
+	ID        int64
+	UserID    uuid.UUID
+	RoleID    int16
+	BannedAt  int64
+	BannedExp int64
 }
 
 type UserRole struct {
-	UserID uuid.UUID `json:"user_id"`
-	RoleID int16     `json:"role_id"`
+	UserID uuid.UUID
+	RoleID int16
 }

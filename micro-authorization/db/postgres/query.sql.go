@@ -11,136 +11,100 @@ import (
 	"github.com/google/uuid"
 )
 
-const rolePermissions = `-- name: RolePermissions :many
-SELECT role_id, permission_id, id, name FROM role_permission rp
-INNER JOIN permission p ON rp.permission_id = p.id
-WHERE rp.role_id = $1
+const bannUserPermission = `-- name: BannUserPermission :exec
+INSERT INTO user_banned_permission (user_id, permission_id, banned_at, banned_exp) VALUES ($1, $2, $3, $4)
 `
 
-type RolePermissionsRow struct {
-	RoleID       int16  `json:"role_id"`
-	PermissionID int16  `json:"permission_id"`
-	ID           int16  `json:"id"`
-	Name         string `json:"name"`
+type BannUserPermissionParams struct {
+	UserID       uuid.UUID
+	PermissionID int16
+	BannedAt     int64
+	BannedExp    int64
 }
 
-func (q *Queries) RolePermissions(ctx context.Context, roleID int16) ([]RolePermissionsRow, error) {
-	rows, err := q.db.Query(ctx, rolePermissions, roleID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []RolePermissionsRow
-	for rows.Next() {
-		var i RolePermissionsRow
-		if err := rows.Scan(
-			&i.RoleID,
-			&i.PermissionID,
-			&i.ID,
-			&i.Name,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) BannUserPermission(ctx context.Context, arg BannUserPermissionParams) error {
+	_, err := q.db.Exec(ctx, bannUserPermission,
+		arg.UserID,
+		arg.PermissionID,
+		arg.BannedAt,
+		arg.BannedExp,
+	)
+	return err
 }
 
-const userBannedPermissions = `-- name: UserBannedPermissions :many
-SELECT id, user_id, permission_id, banned_at, banned_exp FROM user_banned_permission WHERE user_id = $1 AND banned_exp > $2::bigint
+const permission = `-- name: Permission :one
+SELECT id, name FROM permission WHERE name = $1
 `
 
-type UserBannedPermissionsParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Now    int64     `json:"now"`
+func (q *Queries) Permission(ctx context.Context, name string) (Permission, error) {
+	row := q.db.QueryRow(ctx, permission, name)
+	var i Permission
+	err := row.Scan(&i.ID, &i.Name)
+	return i, err
 }
 
-func (q *Queries) UserBannedPermissions(ctx context.Context, arg UserBannedPermissionsParams) ([]UserBannedPermission, error) {
-	rows, err := q.db.Query(ctx, userBannedPermissions, arg.UserID, arg.Now)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []UserBannedPermission
-	for rows.Next() {
-		var i UserBannedPermission
-		if err := rows.Scan(
-			&i.ID,
-			&i.UserID,
-			&i.PermissionID,
-			&i.BannedAt,
-			&i.BannedExp,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const userBannedRoles = `-- name: UserBannedRoles :many
-SELECT id, user_id, role_id, banned_at, banned_exp FROM user_banned_role WHERE user_id = $1 AND banned_exp > $2::bigint
+const role = `-- name: Role :one
+SELECT id, name FROM role WHERE name = $1
 `
 
-type UserBannedRolesParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Now    int64     `json:"now"`
+func (q *Queries) Role(ctx context.Context, name string) (Role, error) {
+	row := q.db.QueryRow(ctx, role, name)
+	var i Role
+	err := row.Scan(&i.ID, &i.Name)
+	return i, err
 }
 
-func (q *Queries) UserBannedRoles(ctx context.Context, arg UserBannedRolesParams) ([]UserBannedRole, error) {
-	rows, err := q.db.Query(ctx, userBannedRoles, arg.UserID, arg.Now)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []UserBannedRole
-	for rows.Next() {
-		var i UserBannedRole
-		if err := rows.Scan(
-			&i.ID,
-			&i.UserID,
-			&i.RoleID,
-			&i.BannedAt,
-			&i.BannedExp,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const userRoles = `-- name: UserRoles :many
-SELECT r.id, r.name FROM user_role ur
-INNER JOIN role r ON ur.role_id = r.id
-WHERE ur.user_id = $1
+const roleGrantPermission = `-- name: RoleGrantPermission :exec
+INSERT INTO role_permission (role_id, permission_id) VALUES ($1, $2)
 `
 
-func (q *Queries) UserRoles(ctx context.Context, userID uuid.UUID) ([]Role, error) {
-	rows, err := q.db.Query(ctx, userRoles, userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Role
-	for rows.Next() {
-		var i Role
-		if err := rows.Scan(&i.ID, &i.Name); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+type RoleGrantPermissionParams struct {
+	RoleID       int16
+	PermissionID int16
+}
+
+func (q *Queries) RoleGrantPermission(ctx context.Context, arg RoleGrantPermissionParams) error {
+	_, err := q.db.Exec(ctx, roleGrantPermission, arg.RoleID, arg.PermissionID)
+	return err
+}
+
+const userBannedPermission = `-- name: UserBannedPermission :one
+SELECT id, user_id, permission_id, banned_at, banned_exp FROM user_banned_permission WHERE user_id = $1 AND permission_id = $2 AND banned_exp > $3::bigint
+`
+
+type UserBannedPermissionParams struct {
+	UserID       uuid.UUID
+	PermissionID int16
+	Now          int64
+}
+
+func (q *Queries) UserBannedPermission(ctx context.Context, arg UserBannedPermissionParams) (UserBannedPermission, error) {
+	row := q.db.QueryRow(ctx, userBannedPermission, arg.UserID, arg.PermissionID, arg.Now)
+	var i UserBannedPermission
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.PermissionID,
+		&i.BannedAt,
+		&i.BannedExp,
+	)
+	return i, err
+}
+
+const userPermit = `-- name: UserPermit :one
+SELECT rp.role_id, rp.permission_id FROM user_role ur
+INNER JOIN role_permission rp ON ur.role_id = rp.role_id
+WHERE ur.user_id = $1 AND rp.permission_id = $2
+`
+
+type UserPermitParams struct {
+	UserID       uuid.UUID
+	PermissionID int16
+}
+
+func (q *Queries) UserPermit(ctx context.Context, arg UserPermitParams) (RolePermission, error) {
+	row := q.db.QueryRow(ctx, userPermit, arg.UserID, arg.PermissionID)
+	var i RolePermission
+	err := row.Scan(&i.RoleID, &i.PermissionID)
+	return i, err
 }

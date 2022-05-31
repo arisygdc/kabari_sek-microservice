@@ -21,7 +21,7 @@ CREATE TABLE "role_permission" (
 );
 
 CREATE TABLE "user_banned_permission" (
-  "id" bigint PRIMARY KEY NOT NULL,
+  "id" BIGSERIAL PRIMARY KEY NOT NULL,
   "user_id" uuid NOT NULL,
   "permission_id" SMALLINT NOT NULL,
   "banned_at" bigint NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE "user_banned_permission" (
 );
 
 CREATE TABLE "user_banned_role" (
-  "id" bigint PRIMARY KEY NOT NULL,
+  "id" BIGSERIAL PRIMARY KEY NOT NULL,
   "user_id" uuid NOT NULL,
   "role_id" SMALLINT NOT NULL,
   "banned_at" bigint NOT NULL,

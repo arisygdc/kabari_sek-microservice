@@ -10,6 +10,11 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
+type IRepository interface {
+	Q() postgres.Querier
+	TX(ctx context.Context, stmt func(q postgres.Querier) error) error
+}
+
 type Repository struct {
 	conn    *pgx.Conn
 	querier *postgres.Queries
