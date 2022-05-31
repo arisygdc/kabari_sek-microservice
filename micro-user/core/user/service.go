@@ -3,11 +3,17 @@ package user
 import (
 	"chat-in-app_microservices/micro-user/core"
 	"chat-in-app_microservices/micro-user/db/postgres"
+	"chat-in-app_microservices/micro-user/token"
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
+)
+
+var (
+	ErrIncorrectUserOrPass = fmt.Errorf("incorrect username or password")
 )
 
 type Service struct {
@@ -19,17 +25,30 @@ func NewService(repo core.Repository) Service {
 }
 
 // Login return nil on successed and error on failure
-func (s Service) Login(ctx context.Context, auth Auth) error {
+func (s Service) Login(ctx context.Context, auth Auth, tokenSecretKey string, tokenDuration time.Duration) (string, error) {
 	authenticate, err := s.repo.Query().GetAuth(ctx, auth.username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return fmt.Errorf("auth not registered")
+			return "", ErrIncorrectUserOrPass
 		}
-		return err
+
+		return "", err
 	}
 
 	err = CheckHashPassword(authenticate.Password, auth.password)
-	return err
+	if err != nil {
+		return "", ErrIncorrectUserOrPass
+	}
+
+	token, err := s.token(tokenSecretKey, authenticate.ID, auth.username, tokenDuration)
+	return token, err
+}
+
+// return jwt token string
+func (s Service) token(secretKey string, id uuid.UUID, username string, duration time.Duration) (string, error) {
+	payload := token.NewAuthPayload(id, username, duration)
+	jwToken := token.NewJWT(secretKey)
+	return jwToken.Generate(payload)
 }
 
 // Register user needs authentication and user information
