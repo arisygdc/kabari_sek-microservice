@@ -7,4 +7,8 @@ db:
   pool: 
     minSize: 1
     maxSize: 3
+    
+token:
+  dur: "20m"
+  secret: "4ca9f25cf0ac1d7bc64b6731261ec6f3be3170225f847858f4de3c9ad5ed50e0"
  
