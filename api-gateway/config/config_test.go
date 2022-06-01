@@ -13,4 +13,6 @@ func TestConfig(t *testing.T) {
 	assert.NoError(t, err)
 
 	assert.NotEmpty(t, cfg.Endpoint.User)
+	assert.NotEmpty(t, cfg.Server.Host)
+	assert.NotZero(t, cfg.Server.Port)
 }
