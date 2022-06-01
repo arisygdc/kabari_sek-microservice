@@ -2,7 +2,9 @@ package router
 
 import (
 	"chat-in-app_microservices/api-gateway/clientapi"
+	"chat-in-app_microservices/api-gateway/config"
 	"chat-in-app_microservices/api-gateway/pb"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -13,6 +15,7 @@ var (
 )
 
 type Router struct {
+	cfg     config.ConfigServer
 	engine  *mux.Router
 	service clientapi.ServiceAPI
 	helper  IHttpHelper
@@ -20,8 +23,9 @@ type Router struct {
 }
 
 //
-func NewRouter(handler *mux.Router, svc clientapi.ServiceAPI) Router {
+func NewRouter(cfg config.ConfigServer, handler *mux.Router, svc clientapi.ServiceAPI) Router {
 	return Router{
+		cfg:     cfg,
 		engine:  handler,
 		service: svc,
 		helper:  NewHttpHelper(),
@@ -35,8 +39,9 @@ func (r Router) RegisterRoute() {
 	r.route.Post("/register", r.register)
 }
 
-func (r Router) Serve() {
-	http.ListenAndServe(":8080", r.engine)
+func (r Router) Serve() error {
+	addr := fmt.Sprintf("%s:%d", r.cfg.Host, r.cfg.Port)
+	return http.ListenAndServe(addr, r.engine)
 }
 
 func (router Router) login(w http.ResponseWriter, r *http.Request) {
