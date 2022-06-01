@@ -1,4 +1,4 @@
-package service
+package authorization
 
 import (
 	"chat-in-app_microservices/micro-authorization/db"

@@ -1,4 +1,4 @@
-package service
+package authorization
 
 import "github.com/google/uuid"
 
