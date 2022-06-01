@@ -11,4 +11,6 @@ func TestLoadConfig(t *testing.T) {
 	err := LoadConfig("../.", "config", conf)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, conf.Database.Name)
+
+	assert.Equal(t, "svc-authorization", conf.Service.Name)
 }

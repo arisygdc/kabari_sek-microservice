@@ -5,7 +5,8 @@ import (
 )
 
 type Config struct {
-	Database DbConfig `mapstructure:"db"`
+	Database DbConfig      `mapstructure:"db"`
+	Service  ServiceConfig `mapstructure:"service"`
 }
 
 type DbConfig struct {
@@ -20,6 +21,10 @@ type DbConfig struct {
 type DbPoolConfig struct {
 	MinSize int `mapstructure:"minPoolSize"`
 	MaxSize int `mapstructure:"maxPoolSize"`
+}
+
+type ServiceConfig struct {
+	Name string `mapstructure:"name"`
 }
 
 func LoadConfig(path, filename string, config *Config) error {
