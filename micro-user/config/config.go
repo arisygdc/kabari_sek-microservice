@@ -1,11 +1,19 @@
 package config
 
 import (
+	"time"
+
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	Database DbConfig `mapstructure:"db"`
+	Database DbConfig    `mapstructure:"db"`
+	Token    TokenConfig `mapstructure:"token"`
+}
+
+type TokenConfig struct {
+	Secret string        `mapstructure:"secret"`
+	Dur    time.Duration `mapstructure:"dur"`
 }
 
 type DbConfig struct {
