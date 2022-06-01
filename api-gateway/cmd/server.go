@@ -1,15 +1,16 @@
 package main
 
-import "go-micro.dev/v4"
+import (
+	"chat-in-app_microservices/api-gateway/pb"
+	"chat-in-app_microservices/api-gateway/router"
+
+	"github.com/gorilla/mux"
+	"go-micro.dev/v4/client"
+)
 
 func main() {
-	service := micro.NewService(
-		micro.Name("hello world"),
-	)
-
-	service.Init()
-
-	service.Server()
-
-	service.Run()
+	engine := mux.NewRouter()
+	router := router.NewRouter(engine, pb.NewUserService("svc_user", client.DefaultClient))
+	router.RegisterRoute()
+	router.Serve()
 }
