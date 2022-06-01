@@ -11,6 +11,7 @@ const (
 	ServiceUserEndpoint string = "svc-user"
 )
 
+// Client GRPC api
 type ServiceAPI struct {
 	User pb.UserService
 }

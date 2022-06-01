@@ -19,6 +19,7 @@ type Router struct {
 	route   IRoute
 }
 
+//
 func NewRouter(handler *mux.Router, svc clientapi.ServiceAPI) Router {
 	return Router{
 		engine:  handler,
@@ -28,6 +29,7 @@ func NewRouter(handler *mux.Router, svc clientapi.ServiceAPI) Router {
 	}
 }
 
+// All route goes here
 func (r Router) RegisterRoute() {
 	r.route.Post("/login", r.login)
 	r.route.Post("/register", r.register)
