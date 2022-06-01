@@ -6,7 +6,6 @@ import (
 	"chat-in-app_microservices/micro-user/db/postgres"
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/jackc/pgx/v4"
 )
@@ -15,19 +14,19 @@ type Repository struct {
 	db db.DB
 }
 
-func NewRepository(conf config.DbConfig) Repository {
+func NewRepository(conf config.DbConfig) (Repository, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	connString := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=disable", conf.User, conf.Pass, conf.Host, conf.Port, conf.Name)
 	conn, err := db.NewConnection(ctx, connString)
 	if err != nil {
-		log.Fatalln(err)
+		return Repository{}, err
 	}
 
 	return Repository{
 		db: conn,
-	}
+	}, nil
 }
 
 func (r Repository) Query() postgres.Querier {
