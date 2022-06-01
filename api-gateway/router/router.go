@@ -1,6 +1,7 @@
 package router
 
 import (
+	"chat-in-app_microservices/api-gateway/clientapi"
 	"chat-in-app_microservices/api-gateway/pb"
 	"net/http"
 
@@ -12,18 +13,18 @@ var (
 )
 
 type Router struct {
-	engine      *mux.Router
-	userService pb.UserService
-	helper      IHttpHelper
-	route       IRoute
+	engine  *mux.Router
+	service clientapi.ServiceAPI
+	helper  IHttpHelper
+	route   IRoute
 }
 
-func NewRouter(handler *mux.Router, userService pb.UserService) Router {
+func NewRouter(handler *mux.Router, svc clientapi.ServiceAPI) Router {
 	return Router{
-		engine:      handler,
-		userService: userService,
-		helper:      NewHttpHelper(),
-		route:       NewHandler(handler),
+		engine:  handler,
+		service: svc,
+		helper:  NewHttpHelper(),
+		route:   NewHandler(handler),
 	}
 }
 
@@ -42,7 +43,7 @@ func (router Router) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	loginResponse, err := router.userService.Login(r.Context(), &pb.LoginRequest{
+	loginResponse, err := router.service.User.Login(r.Context(), &pb.LoginRequest{
 		Username: req.Username,
 		Password: req.Password,
 	})
@@ -75,7 +76,7 @@ func (router Router) register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	registerResponse, err := router.userService.Register(r.Context(), &pb.RegisterRequest{
+	registerResponse, err := router.service.User.Register(r.Context(), &pb.RegisterRequest{
 		Username:  req.Usename,
 		Password:  req.Password,
 		Firstname: req.Firstname,
