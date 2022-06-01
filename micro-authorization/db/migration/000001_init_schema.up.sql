@@ -28,13 +28,6 @@ CREATE TABLE "user_banned_permission" (
   "banned_exp" bigint NOT NULL
 );
 
-CREATE TABLE "user_banned_role" (
-  "id" BIGSERIAL PRIMARY KEY NOT NULL,
-  "user_id" uuid NOT NULL,
-  "role_id" SMALLINT NOT NULL,
-  "banned_at" bigint NOT NULL,
-  "banned_exp" bigint NOT NULL
-);
 
 ALTER TABLE "user_role" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id");
 
@@ -43,5 +36,3 @@ ALTER TABLE "role_permission" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id
 ALTER TABLE "role_permission" ADD FOREIGN KEY ("permission_id") REFERENCES "permission" ("id");
 
 ALTER TABLE "user_banned_permission" ADD FOREIGN KEY ("permission_id") REFERENCES "permission" ("id");
-
-ALTER TABLE "user_banned_role" ADD FOREIGN KEY ("role_id") REFERENCES "role" ("id");

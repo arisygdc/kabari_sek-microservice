@@ -31,14 +31,6 @@ type UserBannedPermission struct {
 	BannedExp    int64
 }
 
-type UserBannedRole struct {
-	ID        int64
-	UserID    uuid.UUID
-	RoleID    int16
-	BannedAt  int64
-	BannedExp int64
-}
-
 type UserRole struct {
 	UserID uuid.UUID
 	RoleID int16
