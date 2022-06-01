@@ -35,7 +35,7 @@ func (rpc GrpcHandler) CheckPermission(ctx context.Context, req *pb.CheckPermiss
 	return nil
 }
 
-func (rpc GrpcHandler) BannStatus(ctx context.Context, req *pb.CheckPermissionRequest, res *pb.CheckPermissionResponse) error {
+func (rpc GrpcHandler) BannStatus(ctx context.Context, req *pb.BannStatusRequest, res *pb.BannStatusResponse) error {
 	id, err := uuid.Parse(req.GetId())
 	if err != nil {
 		return err
