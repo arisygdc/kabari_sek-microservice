@@ -17,3 +17,6 @@ INSERT INTO user_banned_permission (user_id, permission_id, banned_at, banned_ex
 
 -- name: RoleGrantPermission :exec
 INSERT INTO role_permission (role_id, permission_id) VALUES ($1, $2);
+
+-- name: InsertUserRole :exec
+INSERT INTO user_role (user_id, role_id) VALUES ($1, $2);

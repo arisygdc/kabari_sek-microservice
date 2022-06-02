@@ -35,6 +35,19 @@ func NewAuthorization(repos db.IRepository) AuthorizationService {
 	}
 }
 
+func (svc AuthorizationService) InsertUserRole(ctx context.Context, user_id uuid.UUID, role_name string) error {
+	role, err := svc.repos.Q().Role(ctx, role_name)
+	if err != nil {
+		if err == pgx.ErrNoRows {
+			return ErrRoleNotValid
+		}
+		return err
+	}
+
+	err = svc.repos.Q().InsertUserRole(ctx, postgres.InsertUserRoleParams{UserID: user_id, RoleID: role.ID})
+	return err
+}
+
 func (svc AuthorizationService) UserGetPermission(ctx context.Context, user_id uuid.UUID, permission_name string) (Permission, error) {
 	var permission Permission
 	checkPermision, err := svc.getPermission(ctx, permission_name)
