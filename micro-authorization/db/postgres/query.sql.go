@@ -32,6 +32,20 @@ func (q *Queries) BannUserPermission(ctx context.Context, arg BannUserPermission
 	return err
 }
 
+const insertUserRole = `-- name: InsertUserRole :exec
+INSERT INTO user_role (user_id, role_id) VALUES ($1, $2)
+`
+
+type InsertUserRoleParams struct {
+	UserID uuid.UUID
+	RoleID int16
+}
+
+func (q *Queries) InsertUserRole(ctx context.Context, arg InsertUserRoleParams) error {
+	_, err := q.db.Exec(ctx, insertUserRole, arg.UserID, arg.RoleID)
+	return err
+}
+
 const permission = `-- name: Permission :one
 SELECT id, name FROM permission WHERE name = $1
 `

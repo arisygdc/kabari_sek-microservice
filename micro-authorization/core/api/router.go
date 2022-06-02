@@ -19,6 +19,22 @@ func NewGrpcHandler(svc authorization.AuthorizationService) GrpcHandler {
 	}
 }
 
+func (rpc GrpcHandler) GiveRole(ctx context.Context, req *pb.GiveRoleRequest, res *pb.GiveRoleResponse) error {
+	userId, err := uuid.Parse(req.UserId)
+	if err != nil {
+		return err
+	}
+
+	err = rpc.svc.InsertUserRole(ctx, userId, req.RoleName)
+	if err != nil {
+		return err
+	}
+
+	res.ResponseCode = http.StatusCreated
+	res.Message = http.StatusText(int(res.ResponseCode))
+	return nil
+}
+
 func (rpc GrpcHandler) CheckPermission(ctx context.Context, req *pb.CheckPermissionRequest, res *pb.CheckPermissionResponse) error {
 	id, err := uuid.Parse(req.Id)
 	if err != nil {

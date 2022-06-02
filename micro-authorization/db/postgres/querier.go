@@ -10,6 +10,7 @@ import (
 
 type Querier interface {
 	BannUserPermission(ctx context.Context, arg BannUserPermissionParams) error
+	InsertUserRole(ctx context.Context, arg InsertUserRoleParams) error
 	Permission(ctx context.Context, name string) (Permission, error)
 	Role(ctx context.Context, name string) (Role, error)
 	RoleGrantPermission(ctx context.Context, arg RoleGrantPermissionParams) error
