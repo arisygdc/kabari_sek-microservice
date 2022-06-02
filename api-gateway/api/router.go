@@ -1,4 +1,4 @@
-package router
+package api
 
 import (
 	"chat-in-app_microservices/api-gateway/clientapi"
