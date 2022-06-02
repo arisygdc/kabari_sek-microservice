@@ -10,7 +10,8 @@ type Config struct {
 }
 
 type ConfigServiceEndpoint struct {
-	User string `mapstructure:"user"`
+	User          string `mapstructure:"user"`
+	Authorization string `mapstructure:"authorization"`
 }
 
 type ConfigServer struct {

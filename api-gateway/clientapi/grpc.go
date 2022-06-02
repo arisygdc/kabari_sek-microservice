@@ -11,7 +11,8 @@ import (
 
 // Client GRPC api
 type ServiceGrpcAPI struct {
-	User pb.UserService
+	User          pb.UserService
+	Authorization pb.AuthorizationService
 }
 
 func NewService(cfg config.ConfigServiceEndpoint) ServiceGrpcAPI {
@@ -20,6 +21,7 @@ func NewService(cfg config.ConfigServiceEndpoint) ServiceGrpcAPI {
 	})
 
 	return ServiceGrpcAPI{
-		User: pb.NewUserService(cfg.User, rpcClient),
+		User:          pb.NewUserService(cfg.User, rpcClient),
+		Authorization: pb.NewAuthorizationService(cfg.Authorization, rpcClient),
 	}
 }
