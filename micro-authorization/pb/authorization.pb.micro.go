@@ -38,6 +38,7 @@ func NewAuthorizationEndpoints() []*api.Endpoint {
 type AuthorizationService interface {
 	CheckPermission(ctx context.Context, in *CheckPermissionRequest, opts ...client.CallOption) (*CheckPermissionResponse, error)
 	BannStatus(ctx context.Context, in *BannStatusRequest, opts ...client.CallOption) (*BannStatusResponse, error)
+	GiveRole(ctx context.Context, in *GiveRoleRequest, opts ...client.CallOption) (*GiveRoleResponse, error)
 }
 
 type authorizationService struct {
@@ -72,17 +73,29 @@ func (c *authorizationService) BannStatus(ctx context.Context, in *BannStatusReq
 	return out, nil
 }
 
+func (c *authorizationService) GiveRole(ctx context.Context, in *GiveRoleRequest, opts ...client.CallOption) (*GiveRoleResponse, error) {
+	req := c.c.NewRequest(c.name, "Authorization.GiveRole", in)
+	out := new(GiveRoleResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for Authorization service
 
 type AuthorizationHandler interface {
 	CheckPermission(context.Context, *CheckPermissionRequest, *CheckPermissionResponse) error
 	BannStatus(context.Context, *BannStatusRequest, *BannStatusResponse) error
+	GiveRole(context.Context, *GiveRoleRequest, *GiveRoleResponse) error
 }
 
 func RegisterAuthorizationHandler(s server.Server, hdlr AuthorizationHandler, opts ...server.HandlerOption) error {
 	type authorization interface {
 		CheckPermission(ctx context.Context, in *CheckPermissionRequest, out *CheckPermissionResponse) error
 		BannStatus(ctx context.Context, in *BannStatusRequest, out *BannStatusResponse) error
+		GiveRole(ctx context.Context, in *GiveRoleRequest, out *GiveRoleResponse) error
 	}
 	type Authorization struct {
 		authorization
@@ -101,4 +114,8 @@ func (h *authorizationHandler) CheckPermission(ctx context.Context, in *CheckPer
 
 func (h *authorizationHandler) BannStatus(ctx context.Context, in *BannStatusRequest, out *BannStatusResponse) error {
 	return h.AuthorizationHandler.BannStatus(ctx, in, out)
+}
+
+func (h *authorizationHandler) GiveRole(ctx context.Context, in *GiveRoleRequest, out *GiveRoleResponse) error {
+	return h.AuthorizationHandler.GiveRole(ctx, in, out)
 }
