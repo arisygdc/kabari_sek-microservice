@@ -10,16 +10,16 @@ import (
 )
 
 // Client GRPC api
-type ServiceAPI struct {
+type ServiceGrpcAPI struct {
 	User pb.UserService
 }
 
-func NewService(cfg config.ConfigServiceEndpoint) ServiceAPI {
+func NewService(cfg config.ConfigServiceEndpoint) ServiceGrpcAPI {
 	rpcClient := client.NewClient(func(o *client.Options) {
 		o.Context = context.Background()
 	})
 
-	return ServiceAPI{
+	return ServiceGrpcAPI{
 		User: pb.NewUserService(cfg.User, rpcClient),
 	}
 }
