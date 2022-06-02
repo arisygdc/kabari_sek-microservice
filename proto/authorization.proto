@@ -4,6 +4,7 @@ package pb;
 service Authorization {
     rpc CheckPermission (CheckPermissionRequest) returns (CheckPermissionResponse);
     rpc BannStatus (BannStatusRequest) returns (BannStatusResponse);
+    rpc GiveRole (GiveRoleRequest) returns (GiveRoleResponse);
 }
 
 message CheckPermissionRequest {
@@ -27,4 +28,14 @@ message BannStatusResponse {
     string permission_name = 3;
     int64 bannAt = 4;
     int64 bannedExp = 5;
+}
+
+message GiveRoleRequest {
+    string user_id = 1;
+    string role_name = 2;
+}
+
+message GiveRoleResponse {
+    int32 responseCode = 1;
+    string message = 2;
 }
