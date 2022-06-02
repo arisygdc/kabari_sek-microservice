@@ -1,0 +1,41 @@
+syntax = "proto3";
+package pb;
+
+service Authorization {
+    rpc CheckPermission (CheckPermissionRequest) returns (CheckPermissionResponse);
+    rpc BannStatus (BannStatusRequest) returns (BannStatusResponse);
+    rpc GiveRole (GiveRoleRequest) returns (GiveRoleResponse);
+}
+
+message CheckPermissionRequest {
+    string id = 1;
+    string permission_name = 2;
+}
+
+message CheckPermissionResponse {
+    int32 responseCode = 1;
+    string message = 2;
+}
+
+message BannStatusRequest {
+    string id = 1;
+    string permission_name = 2;
+}
+
+message BannStatusResponse {
+    int32 responseCode = 1;
+    string message = 2;
+    string permission_name = 3;
+    int64 bannAt = 4;
+    int64 bannedExp = 5;
+}
+
+message GiveRoleRequest {
+    string user_id = 1;
+    string role_name = 2;
+}
+
+message GiveRoleResponse {
+    int32 responseCode = 1;
+    string message = 2;
+}
