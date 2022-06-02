@@ -24,7 +24,6 @@ func main() {
 	router := api.NewRouter(cfg.Server, svcClient)
 	router.RegisterRoute(handler)
 
-	log.Printf("server running on : %s:%d", cfg.Server.Host, cfg.Server.Port)
 	err = handler.Serve()
 	if err != nil {
 		log.Fatal(err)

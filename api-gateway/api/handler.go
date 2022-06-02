@@ -3,6 +3,7 @@ package api
 import (
 	"chat-in-app_microservices/api-gateway/config"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -33,6 +34,7 @@ func (h Handler) Get(path string, f HandlerFunc) {
 
 func (h Handler) Serve() error {
 	addr := fmt.Sprintf("%s:%d", h.cfg.Host, h.cfg.Port)
+	log.Printf("server running on : %s", addr)
 	h.engine.NotFoundHandler = http.NotFoundHandler()
 	return http.ListenAndServe(addr, h.engine)
 }
