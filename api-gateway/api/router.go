@@ -4,71 +4,67 @@ import (
 	"chat-in-app_microservices/api-gateway/clientapi"
 	"chat-in-app_microservices/api-gateway/config"
 	"chat-in-app_microservices/api-gateway/pb"
-	"fmt"
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
+
+type IRoute interface {
+	Post(path string, f HandlerFunc)
+	Get(path string, f HandlerFunc)
+}
 
 var (
 	CookieSessionName = "session"
 )
 
 type Router struct {
-	cfg     config.ConfigServer
-	engine  *mux.Router
-	service clientapi.ServiceAPI
+	service clientapi.ServiceGrpcAPI
 	helper  IHttpHelper
-	route   IRoute
 }
 
-//
-func NewRouter(cfg config.ConfigServer, handler *mux.Router, svc clientapi.ServiceAPI) Router {
+func NewRouter(cfg config.ConfigServer, svc clientapi.ServiceGrpcAPI) Router {
 	return Router{
-		cfg:     cfg,
-		engine:  handler,
 		service: svc,
 		helper:  NewHttpHelper(),
-		route:   NewHandler(handler),
 	}
 }
 
 // All route goes here
-func (r Router) RegisterRoute() {
-	r.route.Post("/login", r.login)
-	r.route.Post("/register", r.register)
-}
-
-func (r Router) Serve() error {
-	addr := fmt.Sprintf("%s:%d", r.cfg.Host, r.cfg.Port)
-	return http.ListenAndServe(addr, r.engine)
+func (r Router) RegisterRoute(routeHandler IRoute) {
+	routeHandler.Post("/login", r.login)
+	routeHandler.Post("/register", r.register)
 }
 
 func (router Router) login(w http.ResponseWriter, r *http.Request) {
 	var req LoginPost
-	if err := router.helper.JsonParse(r.Body, req); err != nil {
+	if err := router.helper.JsonParse(r.Body, &req); err != nil {
 		return
 	}
 
-	loginResponse, err := router.service.User.Login(r.Context(), &pb.LoginRequest{
+	pbLoginReq := pb.LoginRequest{
 		Username: req.Username,
 		Password: req.Password,
-	})
+	}
+
+	loginResponse, err := router.service.User.Login(r.Context(), &pbLoginReq)
 
 	if err != nil {
-		router.helper.JsonResponseMessage(w, int(loginResponse.GetResponseCode()), loginResponse.GetMessage())
+		if loginResponse == nil {
+			router.helper.JsonResponseMessage(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+			return
+		}
+		router.helper.JsonResponseMessage(w, int(loginResponse.ResponseCode), loginResponse.Message)
 		return
 	}
 
-	responseCode := int(loginResponse.GetResponseCode())
+	responseCode := int(loginResponse.ResponseCode)
 	if responseCode != http.StatusAccepted {
-		router.helper.JsonResponseMessage(w, responseCode, loginResponse.GetMessage())
+		router.helper.JsonResponseMessage(w, responseCode, loginResponse.Message)
 		return
 	}
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     CookieSessionName,
-		Value:    loginResponse.GetUserToken(),
+		Value:    loginResponse.UserToken,
 		HttpOnly: true,
 		Secure:   true,
 	})
@@ -78,7 +74,7 @@ func (router Router) login(w http.ResponseWriter, r *http.Request) {
 
 func (router Router) register(w http.ResponseWriter, r *http.Request) {
 	var req RegisterPost
-	if err := router.helper.JsonParse(r.Body, req); err != nil {
+	if err := router.helper.JsonParse(r.Body, &req); err != nil {
 		router.helper.JsonResponseMessage(w, http.StatusBadRequest, err)
 		return
 	}
@@ -92,13 +88,17 @@ func (router Router) register(w http.ResponseWriter, r *http.Request) {
 	})
 
 	if err != nil {
-		router.helper.JsonResponseMessage(w, int(registerResponse.GetResponseCode()), registerResponse.GetMessage())
+		if registerResponse == nil {
+			router.helper.JsonResponseMessage(w, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError))
+			return
+		}
+		router.helper.JsonResponseMessage(w, int(registerResponse.ResponseCode), registerResponse.Message)
 		return
 	}
 
-	responseCode := int(registerResponse.GetResponseCode())
+	responseCode := int(registerResponse.ResponseCode)
 	if responseCode != http.StatusAccepted {
-		router.helper.JsonResponseMessage(w, responseCode, registerResponse.GetMessage())
+		router.helper.JsonResponseMessage(w, responseCode, registerResponse.Message)
 		return
 	}
 

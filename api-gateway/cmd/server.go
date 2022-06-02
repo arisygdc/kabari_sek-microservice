@@ -16,12 +16,16 @@ func main() {
 		log.Fatal(err)
 	}
 
-	engine := mux.NewRouter()
 	svcClient := clientapi.NewService(cfg.Endpoint)
-	router := api.NewRouter(cfg.Server, engine, svcClient)
-	router.RegisterRoute()
 
-	err = router.Serve()
+	engine := mux.NewRouter()
+	handler := api.NewHandler(cfg.Server, engine)
+
+	router := api.NewRouter(cfg.Server, svcClient)
+	router.RegisterRoute(handler)
+
+	log.Printf("server running on : %s:%d", cfg.Server.Host, cfg.Server.Port)
+	err = handler.Serve()
 	if err != nil {
 		log.Fatal(err)
 	}
