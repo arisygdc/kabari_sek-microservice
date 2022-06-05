@@ -95,3 +95,20 @@ func (s Service) Register(ctx context.Context, user RegisterUser) error {
 func (s Service) GetUser(ctx context.Context, id uuid.UUID) (postgres.User, error) {
 	return s.repo.Query().GetUser(ctx, id)
 }
+
+func (s Service) VerifySession(ctx context.Context, tokenSecretKey, tokenString string) error {
+	var payload token.AuthenticationPayload
+
+	tokenHandler := token.NewJWT(tokenSecretKey)
+	err := tokenHandler.ParseWithClaimAuthPayload(tokenString, &payload)
+	if err != nil {
+		return err
+	}
+
+	auth, err := s.repo.Query().GetAuth(ctx, payload.Username)
+	if err != nil {
+		return err
+	}
+
+	return payload.CompareID(auth.ID, auth.Username)
+}
