@@ -35,4 +35,7 @@ func main() {
 	}
 
 	svcServer.Init()
+	if err := svcServer.Run(); err != nil {
+		log.Fatal("cannot start micro user server")
+	}
 }
