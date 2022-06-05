@@ -6,7 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const layout string = "2006-Jan-02"
+const layout string = "2006-06-02"
 
 // Check hash using bcrypt
 func CheckHashPassword(hashedPassword, password string) error {
