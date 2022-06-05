@@ -11,9 +11,11 @@ import (
 )
 
 type Auth struct {
-	ID       uuid.UUID `json:"id"`
-	Username string    `json:"username"`
-	Password string    `json:"password"`
+	ID        uuid.UUID `json:"id"`
+	Username  string    `json:"username"`
+	Password  string    `json:"password"`
+	CreatedAt int64     `json:"created_at"`
+	UpdatedAt int64     `json:"updated_at"`
 }
 
 type User struct {
@@ -21,5 +23,6 @@ type User struct {
 	Firstname string    `json:"firstname"`
 	Lastname  string    `json:"lastname"`
 	Birth     time.Time `json:"birth"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt int64     `json:"created_at"`
+	UpdatedAt int64     `json:"updated_at"`
 }
