@@ -2,8 +2,8 @@ package user
 
 import (
 	"chat-in-app_microservices/micro-user/core"
-	"chat-in-app_microservices/micro-user/db/postgres"
-	"chat-in-app_microservices/micro-user/token"
+	"chat-in-app_microservices/micro-user/pkg/db/postgres"
+	"chat-in-app_microservices/micro-user/pkg/token"
 	"context"
 	"fmt"
 	"time"

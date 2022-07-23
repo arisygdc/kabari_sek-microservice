@@ -2,8 +2,8 @@ package core
 
 import (
 	"chat-in-app_microservices/micro-user/config"
-	"chat-in-app_microservices/micro-user/db"
-	"chat-in-app_microservices/micro-user/db/postgres"
+	"chat-in-app_microservices/micro-user/pkg/db"
+	"chat-in-app_microservices/micro-user/pkg/db/postgres"
 	"context"
 	"fmt"
 

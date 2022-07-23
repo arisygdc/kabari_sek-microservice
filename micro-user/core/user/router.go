@@ -2,7 +2,7 @@ package user
 
 import (
 	"chat-in-app_microservices/micro-user/config"
-	"chat-in-app_microservices/micro-user/pb"
+	"chat-in-app_microservices/micro-user/pkg/pb"
 	"context"
 	"net/http"
 )

@@ -4,7 +4,7 @@ postgresql_user := postgres
 postgresql_password := secret
 postgresql_database := user
 
-migration_dir := db/migration
+migration_dir := pkg/db/migration
 
 installpostgre:
 	docker run -d --name ${container_name} \

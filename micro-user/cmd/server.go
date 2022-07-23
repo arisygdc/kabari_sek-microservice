@@ -4,7 +4,7 @@ import (
 	"chat-in-app_microservices/micro-user/config"
 	"chat-in-app_microservices/micro-user/core"
 	"chat-in-app_microservices/micro-user/core/user"
-	"chat-in-app_microservices/micro-user/pb"
+	"chat-in-app_microservices/micro-user/pkg/pb"
 	"log"
 
 	"go-micro.dev/v4"

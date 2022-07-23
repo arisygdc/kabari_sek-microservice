@@ -1,7 +1,7 @@
 package db
 
 import (
-	"chat-in-app_microservices/micro-user/db/postgres"
+	"chat-in-app_microservices/micro-user/pkg/db/postgres"
 	"context"
 
 	"github.com/jackc/pgx/v4"
