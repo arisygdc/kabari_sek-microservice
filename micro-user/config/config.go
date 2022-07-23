@@ -21,17 +21,18 @@ type TokenConfig struct {
 }
 
 type DbConfig struct {
-	Name string       `mapstructure:"name"`
-	Host string       `mapstructure:"host"`
-	Port int32        `mapstructure:"port"`
-	User string       `mapstructure:"user"`
-	Pass string       `mapstructure:"pass"`
-	Pool DbPoolConfig `mapstructure:"pool"`
+	Name    string       `mapstructure:"name"`
+	Host    string       `mapstructure:"host"`
+	Port    int32        `mapstructure:"port"`
+	User    string       `mapstructure:"user"`
+	Pass    string       `mapstructure:"pass"`
+	SslMode string       `mapstructure:"sslmode"`
+	Pool    DbPoolConfig `mapstructure:"pool"`
 }
 
 type DbPoolConfig struct {
-	MinSize int `mapstructure:"minPoolSize"`
-	MaxSize int `mapstructure:"maxPoolSize"`
+	MinSize int `mapstructure:"minSize"`
+	MaxSize int `mapstructure:"maxSize"`
 }
 
 func LoadConfig(path, filename string, config *Config) error {
@@ -40,6 +41,7 @@ func LoadConfig(path, filename string, config *Config) error {
 	viper.AddConfigPath(".")
 	viper.AddConfigPath(path)
 
+	viper.AutomaticEnv()
 	err := viper.ReadInConfig()
 	if err != nil {
 		return err
