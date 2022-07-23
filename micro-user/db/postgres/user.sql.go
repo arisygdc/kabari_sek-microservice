@@ -13,7 +13,7 @@ import (
 )
 
 const getUser = `-- name: GetUser :one
-SELECT id, firstname, lastname, birth, created_at FROM users WHERE id = $1
+SELECT id, firstname, lastname, birth, created_at, updated_at FROM users WHERE id = $1
 `
 
 func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
@@ -25,12 +25,13 @@ func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.Lastname,
 		&i.Birth,
 		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const insertUser = `-- name: InsertUser :exec
-INSERT INTO users (id, firstname, lastname, birth) VALUES ($1, $2, $3, $4)
+INSERT INTO users (id, firstname, lastname, birth, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)
 `
 
 type InsertUserParams struct {
@@ -38,6 +39,8 @@ type InsertUserParams struct {
 	Firstname string    `json:"firstname"`
 	Lastname  string    `json:"lastname"`
 	Birth     time.Time `json:"birth"`
+	CreatedAt int64     `json:"created_at"`
+	UpdatedAt int64     `json:"updated_at"`
 }
 
 func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) error {
@@ -46,6 +49,8 @@ func (q *Queries) InsertUser(ctx context.Context, arg InsertUserParams) error {
 		arg.Firstname,
 		arg.Lastname,
 		arg.Birth,
+		arg.CreatedAt,
+		arg.UpdatedAt,
 	)
 	return err
 }

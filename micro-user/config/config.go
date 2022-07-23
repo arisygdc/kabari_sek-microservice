@@ -7,8 +7,12 @@ import (
 )
 
 type Config struct {
-	Database DbConfig    `mapstructure:"db"`
-	Token    TokenConfig `mapstructure:"token"`
+	Database DbConfig     `mapstructure:"db"`
+	Token    TokenConfig  `mapstructure:"token"`
+	Server   ServerConfig `mapstructure:"server"`
+}
+type ServerConfig struct {
+	SvcName string `mapstructure:"service_name"`
 }
 
 type TokenConfig struct {

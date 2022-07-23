@@ -48,5 +48,6 @@ func (r Repository) Tx(ctx context.Context, statement func(postgres.Querier) err
 		}
 		return err
 	}
-	return nil
+	err = pgTx.Commit(ctx)
+	return err
 }

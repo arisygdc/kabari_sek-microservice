@@ -18,4 +18,6 @@ func TestLoadConfig(t *testing.T) {
 
 	assert.NotEmpty(t, conf.Token.Dur)
 	assert.NotEmpty(t, conf.Token.Secret)
+
+	assert.NotEmpty(t, conf.Server.SvcName)
 }

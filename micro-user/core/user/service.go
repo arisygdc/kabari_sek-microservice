@@ -5,11 +5,11 @@ import (
 	"chat-in-app_microservices/micro-user/db/postgres"
 	"chat-in-app_microservices/micro-user/token"
 	"context"
-	"database/sql"
 	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v4"
 )
 
 var (
@@ -28,7 +28,7 @@ func NewService(repo core.Repository) Service {
 func (s Service) Login(ctx context.Context, auth Auth, tokenSecretKey string, tokenDuration time.Duration) (string, error) {
 	authenticate, err := s.repo.Query().GetAuth(ctx, auth.username)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if err == pgx.ErrNoRows {
 			return "", ErrIncorrectUserOrPass
 		}
 
@@ -48,7 +48,8 @@ func (s Service) Login(ctx context.Context, auth Auth, tokenSecretKey string, to
 func (s Service) token(secretKey string, id uuid.UUID, username string, duration time.Duration) (string, error) {
 	payload := token.NewAuthPayload(id, username, duration)
 	jwToken := token.NewJWT(secretKey)
-	return jwToken.Generate(payload)
+	generatedToken, err := jwToken.Generate(payload)
+	return generatedToken, err
 }
 
 // Register user needs authentication and user information
@@ -58,10 +59,14 @@ func (s Service) Register(ctx context.Context, user RegisterUser) error {
 		return err
 	}
 
+	registerTime := time.Now().Unix()
+
 	authParam := postgres.InsertAuthParams{
-		ID:       uuid.New(),
-		Username: user.username,
-		Password: password,
+		ID:        uuid.New(),
+		Username:  user.username,
+		Password:  password,
+		CreatedAt: registerTime,
+		UpdatedAt: registerTime,
 	}
 
 	userParam := postgres.InsertUserParams{
@@ -69,6 +74,8 @@ func (s Service) Register(ctx context.Context, user RegisterUser) error {
 		Firstname: user.Firstname,
 		Lastname:  user.Lastname,
 		Birth:     user.Birth,
+		CreatedAt: registerTime,
+		UpdatedAt: registerTime,
 	}
 
 	return s.repo.Tx(ctx, func(q postgres.Querier) error {
@@ -87,4 +94,21 @@ func (s Service) Register(ctx context.Context, user RegisterUser) error {
 // Get user information by id
 func (s Service) GetUser(ctx context.Context, id uuid.UUID) (postgres.User, error) {
 	return s.repo.Query().GetUser(ctx, id)
+}
+
+func (s Service) VerifySession(ctx context.Context, tokenSecretKey, tokenString string) error {
+	var payload token.AuthenticationPayload
+
+	tokenHandler := token.NewJWT(tokenSecretKey)
+	err := tokenHandler.ParseWithClaimAuthPayload(tokenString, &payload)
+	if err != nil {
+		return err
+	}
+
+	auth, err := s.repo.Query().GetAuth(ctx, payload.Username)
+	if err != nil {
+		return err
+	}
+
+	return payload.CompareID(auth.ID, auth.Username)
 }
