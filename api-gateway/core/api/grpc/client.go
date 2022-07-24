@@ -1,4 +1,4 @@
-package clientapi
+package grpc
 
 import (
 	"chat-in-app_microservices/api-gateway/pkg/pb"
