@@ -1,7 +1,7 @@
 package clientapi
 
 import (
-	"chat-in-app_microservices/api-gateway/pb"
+	"chat-in-app_microservices/api-gateway/pkg/pb"
 
 	"chat-in-app_microservices/api-gateway/config"
 

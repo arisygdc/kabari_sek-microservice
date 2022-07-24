@@ -1,8 +1,8 @@
 package main
 
 import (
-	"chat-in-app_microservices/api-gateway/clientapi"
 	"chat-in-app_microservices/api-gateway/config"
+	consumerUserSvc "chat-in-app_microservices/api-gateway/core/api/grpc"
 	"log"
 )
 
@@ -13,7 +13,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	clientapi.NewService(cfg.Endpoint)
+	consumerUserSvc.NewService(cfg.Endpoint)
 
 	if err != nil {
 		log.Fatal(err)
