@@ -4,6 +4,7 @@ import (
 	"chat-in-app_microservices/api-gateway/core/api/grpc"
 	"chat-in-app_microservices/api-gateway/pkg/pb"
 	"fmt"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
@@ -34,7 +35,7 @@ func (h Handler) Register(ctx echo.Context) (err error) {
 		})
 	}
 
-	usernameCreated, err := h.svc.User.Register(ctx.Request().Context(), &pb.RegisterRequest{
+	respSvc, err := h.svc.User.Register(ctx.Request().Context(), &pb.RegisterRequest{
 		Username:  req.Username,
 		Password:  req.Password,
 		Firstname: req.Firstname,
@@ -49,7 +50,7 @@ func (h Handler) Register(ctx echo.Context) (err error) {
 	}
 
 	return ctx.JSON(201, map[string]interface{}{
-		"message": fmt.Sprintf("%s created", usernameCreated),
+		"message": fmt.Sprintf("%s created", respSvc.Username),
 	})
 }
 
@@ -66,10 +67,24 @@ func (h Handler) Login(ctx echo.Context) (err error) {
 		})
 	}
 
-	_, err = h.svc.User.Login(ctx.Request().Context(), &pb.LoginRequest{
+	respSvc, err := h.svc.User.Login(ctx.Request().Context(), &pb.LoginRequest{
 		Username: req.Username,
 		Password: req.Password,
 	})
 
-	return
+	if err != nil {
+		return ctx.JSON(500, map[string]interface{}{
+			"message": err.Error(),
+		})
+	}
+
+	ctx.SetCookie(&http.Cookie{
+		Name:     "X-SESSION-TOKEN",
+		Value:    respSvc.UserToken,
+		HttpOnly: true,
+	})
+
+	return ctx.JSON(200, map[string]interface{}{
+		"message": "logged in",
+	})
 }
