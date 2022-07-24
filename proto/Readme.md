@@ -9,9 +9,9 @@ $ protoc --proto_path=$GOPATH/src:./micro-user/pkg/pb \
 
 Generate to api-gateway
 
-$ protoc --proto_path=$GOPATH/src:./api-gateway/pb \
-    --micro_out=./api-gateway/pb \
-    --go_out=./api-gateway/pb \
+$ protoc --proto_path=$GOPATH/src:./api-gateway/pkg/pb \
+    --micro_out=./api-gateway/pkg/pb \
+    --go_out=./api-gateway/pkg/pb \
     --proto_path=./proto user.proto
 ```
 
@@ -26,8 +26,8 @@ $ protoc --proto_path=$GOPATH/src:./micro-authorization/pb \
 
 Generate to api-gateway
 
-$ protoc --proto_path=$GOPATH/src:./api-gateway/pb \
-    --micro_out=./api-gateway/pb \
-    --go_out=./api-gateway/pb \
+$ protoc --proto_path=$GOPATH/src:./api-gateway/pkg/pb \
+    --micro_out=./api-gateway/pkg/pb \
+    --go_out=./api-gateway/pkg/pb \
     --proto_path=./proto authorization.proto
 ```
