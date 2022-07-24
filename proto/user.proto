@@ -12,9 +12,7 @@ message LoginRequest {
 }
 
 message LoginResponse {
-    int32 responseCode = 1;
     string userToken = 2;
-    string message = 3;
 }
 
 message RegisterRequest {
@@ -26,6 +24,5 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-    int32 responseCode = 1;
-    string message = 2;
+    string username = 1;
 }
