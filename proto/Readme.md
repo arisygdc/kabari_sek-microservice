@@ -2,7 +2,7 @@
 ```
 Generate to micro user
 
-$ protoc --proto_path=$GOPATH/src:./micro-user/pb \
+$ protoc --proto_path=$GOPATH/src:./micro-user/pkg/pb \
     --micro_out=./micro-user/pkg/pb \
     --go_out=./micro-user/pkg/pb \
     --proto_path=./proto user.proto
