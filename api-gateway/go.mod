@@ -4,7 +4,8 @@ go 1.18
 
 require (
 	github.com/golang/protobuf v1.5.2
-	github.com/gorilla/mux v1.8.0
+	github.com/spf13/viper v1.12.0
+	github.com/stretchr/testify v1.7.1
 	go-micro.dev/v4 v4.7.0
 	golang.org/x/net v0.0.0-20220531201128-c960675eff93
 	google.golang.org/protobuf v1.28.0
@@ -28,8 +29,6 @@ require (
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.12.0 // indirect
-	github.com/stretchr/testify v1.7.1 // indirect
 	github.com/subosito/gotenv v1.3.0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
 	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29 // indirect
