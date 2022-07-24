@@ -53,10 +53,12 @@ func (s Service) token(secretKey string, id uuid.UUID, username string, duration
 }
 
 // Register user needs authentication and user information
-func (s Service) Register(ctx context.Context, user RegisterUser) error {
+// Return username
+// TODO Should return inserted username
+func (s Service) Register(ctx context.Context, user RegisterUser) (string, error) {
 	password, err := HashPassword(user.password)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	registerTime := time.Now().Unix()
@@ -78,7 +80,7 @@ func (s Service) Register(ctx context.Context, user RegisterUser) error {
 		UpdatedAt: registerTime,
 	}
 
-	return s.repo.Tx(ctx, func(q postgres.Querier) error {
+	execTx := s.repo.Tx(ctx, func(q postgres.Querier) error {
 		err := q.InsertAuth(ctx, authParam)
 
 		if err != nil {
@@ -89,6 +91,8 @@ func (s Service) Register(ctx context.Context, user RegisterUser) error {
 
 		return err
 	})
+
+	return authParam.Username, execTx
 }
 
 // Get user information by id
