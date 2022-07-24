@@ -3,6 +3,7 @@ package main
 import (
 	"chat-in-app_microservices/api-gateway/config"
 	consumerUserSvc "chat-in-app_microservices/api-gateway/core/api/grpc"
+	httpServer "chat-in-app_microservices/api-gateway/core/api/http"
 	"log"
 )
 
@@ -13,7 +14,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	consumerUserSvc.NewService(cfg.Endpoint)
+	svcClient := consumerUserSvc.NewService(cfg.Endpoint)
+	srv := httpServer.NewEchoServer(cfg, svcClient)
+	err = srv.RegisterRoute()
 
 	if err != nil {
 		log.Fatal(err)
