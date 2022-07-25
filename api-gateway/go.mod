@@ -6,7 +6,7 @@ require (
 	github.com/golang/protobuf v1.5.2
 	github.com/labstack/echo/v4 v4.7.2
 	github.com/spf13/viper v1.12.0
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.8.0
 	go-micro.dev/v4 v4.7.0
 	golang.org/x/net v0.0.0-20220531201128-c960675eff93
 	google.golang.org/protobuf v1.28.0
@@ -47,5 +47,5 @@ require (
 	golang.org/x/xerrors v0.0.0-20220517211312-f3a8303e98df // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

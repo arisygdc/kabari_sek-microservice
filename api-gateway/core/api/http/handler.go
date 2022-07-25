@@ -19,14 +19,6 @@ func NewHandler(svc grpc.ServiceGrpcAPI) Handler {
 	}
 }
 
-type RegisterRequest struct {
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	Birth     string `json:"birth"`
-}
-
 func (h Handler) Register(ctx echo.Context) (err error) {
 	req := new(RegisterRequest)
 	if err = ctx.Bind(req); err != nil {
@@ -54,14 +46,15 @@ func (h Handler) Register(ctx echo.Context) (err error) {
 	})
 }
 
-type LoginRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-}
-
 func (h Handler) Login(ctx echo.Context) (err error) {
 	req := new(LoginRequest)
 	if err := ctx.Bind(req); err != nil {
+		return ctx.JSON(400, map[string]interface{}{
+			"message": err.Error(),
+		})
+	}
+
+	if err := ValidateRequest(req); err != nil {
 		return ctx.JSON(400, map[string]interface{}{
 			"message": err.Error(),
 		})
