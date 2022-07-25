@@ -10,7 +10,7 @@ import (
 )
 
 type IHttpServer interface {
-	RegisterRoute()
+	RegisterRoute() error
 }
 
 type EchoServer struct {
@@ -33,13 +33,13 @@ func NewEchoServer(cfg config.Config, svc grpc.ServiceGrpcAPI) EchoServer {
 }
 
 func (e EchoServer) route() {
-	e.provider.GET("/api/v1/register", e.handler.Register)
-	e.provider.GET("/api/v1/login", e.handler.Login)
+	e.provider.POST("/api/v1/register", e.handler.Register)
+	e.provider.POST("/api/v1/login", e.handler.Login)
 }
 
 func (e EchoServer) RegisterRoute() error {
 	e.route()
 	err := e.provider.Start(fmt.Sprintf(":%d", e.cfg.Server.Port))
-	e.provider.Logger.Warn(err)
+	e.provider.Logger.Fatal(err)
 	return err
 }

@@ -8,17 +8,19 @@ import (
 )
 
 func main() {
+	srv := serverInit()
+	srv.RegisterRoute()
+}
+
+func serverInit() (srv httpServer.IHttpServer) {
 	cfg := config.Config{}
 	err := config.LoadConfig(".", "config", &cfg)
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
 	svcClient := consumerUserSvc.NewService(cfg.Endpoint)
-	srv := httpServer.NewEchoServer(cfg, svcClient)
-	err = srv.RegisterRoute()
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	srv = httpServer.NewEchoServer(cfg, svcClient)
+	return
 }
