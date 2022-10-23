@@ -49,7 +49,7 @@ func TestService(t *testing.T) {
 		password: "the hasingin",
 	}
 
-	err = svc.Register(ctx, RegisterUser{
+	_, err = svc.Register(ctx, RegisterUser{
 		Auth: auth,
 		User: User{
 			Firstname: "simon",

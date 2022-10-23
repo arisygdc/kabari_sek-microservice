@@ -20,4 +20,7 @@ func TestLoadConfig(t *testing.T) {
 	assert.NotEmpty(t, conf.Token.Secret)
 
 	assert.NotEmpty(t, conf.Server.SvcName)
+
+	assert.NotZero(t, conf.Database.Pool.MaxSize)
+	assert.NotZero(t, conf.Database.Pool.MinSize)
 }

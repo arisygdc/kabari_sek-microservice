@@ -4,6 +4,7 @@ db:
   port: "5432"
   user: "postgres"
   pass: "secret"
+  sslmode: "disable"
   pool: 
     minSize: 1
     maxSize: 3

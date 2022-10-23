@@ -3,8 +3,16 @@ module chat-in-app_microservices/micro-user
 go 1.18
 
 require (
+	github.com/golang-jwt/jwt/v4 v4.4.1
+	github.com/golang/protobuf v1.5.2
+	github.com/google/uuid v1.3.0
+	github.com/jackc/pgconn v1.12.1
+	github.com/jackc/pgx/v4 v4.16.1
 	github.com/spf13/viper v1.11.0
 	github.com/stretchr/testify v1.7.1
+	go-micro.dev/v4 v4.7.0
+	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
+	google.golang.org/protobuf v1.28.0
 )
 
 require (
@@ -19,19 +27,15 @@ require (
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
 	github.com/go-git/go-git/v5 v5.4.2 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.1 // indirect
-	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/jackc/chunkreader/v2 v2.0.1 // indirect
-	github.com/jackc/pgconn v1.12.1 // indirect
 	github.com/jackc/pgio v1.0.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgproto3/v2 v2.3.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20200714003250-2b9c44734f2b // indirect
 	github.com/jackc/pgtype v1.11.0 // indirect
-	github.com/jackc/pgx/v4 v4.16.1 // indirect
+	github.com/jackc/puddle v1.2.1 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
@@ -55,13 +59,10 @@ require (
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/urfave/cli/v2 v2.3.0 // indirect
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
-	go-micro.dev/v4 v4.7.0 // indirect
-	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4 // indirect
 	golang.org/x/net v0.0.0-20220412020605-290c469a71a5 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad // indirect
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
