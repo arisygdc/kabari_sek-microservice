@@ -12,9 +12,8 @@ message LoginRequest {
 }
 
 message LoginResponse {
-    int32 responseCode = 1;
+api-gateway
     string userToken = 2;
-    string message = 3;
 }
 
 message RegisterRequest {
@@ -26,6 +25,6 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-    int32 responseCode = 1;
-    string message = 2;
+api-gateway
+    string username = 1;
 }

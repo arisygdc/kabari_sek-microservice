@@ -1,32 +1,26 @@
 package main
 
 import (
-	"chat-in-app_microservices/api-gateway/api"
-	"chat-in-app_microservices/api-gateway/clientapi"
 	"chat-in-app_microservices/api-gateway/config"
+	consumerUserSvc "chat-in-app_microservices/api-gateway/core/api/grpc"
+	httpServer "chat-in-app_microservices/api-gateway/core/api/http"
 	"log"
-
-	"github.com/gorilla/mux"
 )
 
 func main() {
+	srv := serverInit()
+	srv.RegisterRoute()
+}
+
+func serverInit() (srv httpServer.IHttpServer) {
 	cfg := config.Config{}
 	err := config.LoadConfig(".", "config", &cfg)
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
-	svcClient := clientapi.NewService(cfg.Endpoint)
-
-	engine := mux.NewRouter()
-	handler := api.NewHandler(cfg.Server, engine)
-
-	router := api.NewRouter(cfg.Server, svcClient)
-	router.RegisterRoute(handler)
-
-	log.Printf("server running on : %s:%d", cfg.Server.Host, cfg.Server.Port)
-	err = handler.Serve()
-	if err != nil {
-		log.Fatal(err)
-	}
+	svcClient := consumerUserSvc.NewService(cfg.Endpoint)
+	srv = httpServer.NewEchoServer(cfg, svcClient)
+	return
 }
